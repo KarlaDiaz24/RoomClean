@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomClean", "RoomClean\RoomClean.csproj", "{2839533A-E73D-4DB9-8278-B66420C3378E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{C938FF3C-EDC3-4EE1-B82C-44968E73281E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2839533A-E73D-4DB9-8278-B66420C3378E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2839533A-E73D-4DB9-8278-B66420C3378E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2839533A-E73D-4DB9-8278-B66420C3378E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2839533A-E73D-4DB9-8278-B66420C3378E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C938FF3C-EDC3-4EE1-B82C-44968E73281E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C938FF3C-EDC3-4EE1-B82C-44968E73281E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C938FF3C-EDC3-4EE1-B82C-44968E73281E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C938FF3C-EDC3-4EE1-B82C-44968E73281E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29659B4D-BD61-4710-9892-0DD0AACB831B}
+	EndGlobalSection
+EndGlobal
