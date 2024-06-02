@@ -15,7 +15,5 @@ namespace RoomClean.Context
         public DbSet<Tarea> tarea { get; set; }
         public DbSet<Evidencia> evidencia { get; set; }
         public DbSet<Foto> foto { get; set; }
-
-
     }
 }
