@@ -1,5 +1,4 @@
-﻿
-
+﻿using Domain.DTOS;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using RoomClean.Context;
@@ -42,7 +41,7 @@ namespace RoomClean.Services
             }
         }
 
-        public async Task<Response<Usuario>> CrearUsuario(UsuarioResponse request)
+        public async Task<Response<Usuario>> CrearUsuario(UsuarioDto request)
         {
             try
             {
@@ -69,7 +68,7 @@ namespace RoomClean.Services
             }
         }
 
-        public async Task<Response<Usuario>> ActualizarUsuario(int id, UsuarioResponse usuario)
+        public async Task<Response<Usuario>> ActualizarUsuario(int id, UsuarioDto usuario)
         {
             try
             {

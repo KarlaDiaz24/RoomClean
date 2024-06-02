@@ -14,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConection")));
 builder.Services.AddTransient<ITareaService, TareaService>();
 builder.Services.AddTransient<IEvidenciaService, EvidenciaService>();
+builder.Services.AddTransient<IUsuarioService, UsuarioService>();
+
 
 var app = builder.Build();
 
