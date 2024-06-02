@@ -3,6 +3,7 @@ using RoomClean.Context;
 using RoomClean.Services;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlSer
 builder.Services.AddTransient<ITareaService, TareaService>();
 builder.Services.AddTransient<IEvidenciaService, EvidenciaService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
+builder.Services.AddTransient<IFotoService, FotoService>();
+
 
 
 var app = builder.Build();
