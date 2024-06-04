@@ -1,11 +1,14 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOS;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RoomClean.Services;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace RoomClean.Controllers
 {
@@ -13,15 +16,17 @@ namespace RoomClean.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IUsuarioService _usuarioService;
+        private readonly IConfiguration _configuration;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration)
+        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
+            _usuarioService = usuarioService;
+            _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -31,6 +36,17 @@ namespace RoomClean.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                var usuarioDto = new UsuarioDto
+                {
+                    Nombre = model.Nombre,
+                    Apellido = model.Apellido,
+                    Número = model.Número,
+                    Correo = model.Email,
+                    Contraseña = model.Password,
+                    FKRol = model.FKRol // Asignar el rol adecuado
+                };
+
+                await _usuarioService.CrearUsuario(usuarioDto);
                 return Ok(new { result = "User created successfully" });
             }
             return BadRequest(result.Errors);
@@ -73,19 +89,24 @@ namespace RoomClean.Controllers
     public class RegisterModel
     {
         [Required]
+        public string Nombre { get; set; }
+        [Required]
+        public string Apellido { get; set; }
+        [Required]
+        public string Número { get; set; }
+        [Required]
         public string Email { get; set; }
-
         [Required]
         public string Password { get; set; }
+        [Required]
+        public int FKRol { get; set; } // Role ID
     }
 
     public class LoginModel
     {
         [Required]
         public string Email { get; set; }
-
         [Required]
         public string Password { get; set; }
     }
 }
-
