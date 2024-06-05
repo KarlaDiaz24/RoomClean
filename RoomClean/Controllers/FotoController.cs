@@ -15,6 +15,7 @@ namespace RoomClean.Controllers
         {
             _fotoService = fotoService;
         }
+
         [HttpGet("list")]
         public async Task<IActionResult> ObtenerLista()
         {
@@ -27,18 +28,23 @@ namespace RoomClean.Controllers
             var response = await _fotoService.ObtenerPorId(id);
             return Ok(response);
         }
+        [Authorize(Roles = "Empleado")]
         [HttpPost("create")]
         public async Task<ActionResult> Crear([FromBody] FotoDto request)
         {
             var response = await _fotoService.Crear(request);
             return Ok(response);
         }
+        [Authorize(Roles = "Empleado")]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Editar([FromBody] FotoDto request, int id)
         {
             var response = await _fotoService.Editar(request, id);
             return Ok(response);
         }
+
+
+        [Authorize(Roles = "Empleado")]
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {

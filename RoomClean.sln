@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomClean", "RoomClean\RoomClean.csproj", "{2839533A-E73D-4DB9-8278-B66420C3378E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomClean", "RoomClean\RoomClean.csproj", "{2839533A-E73D-4DB9-8278-B66420C3378E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{C938FF3C-EDC3-4EE1-B82C-44968E73281E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{C938FF3C-EDC3-4EE1-B82C-44968E73281E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

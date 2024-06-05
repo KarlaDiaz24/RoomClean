@@ -1,9 +1,11 @@
 ﻿using Domain.DTOS;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoomClean.Services;
 
 namespace RoomClean.Controllers
 {
+    [Authorize(Roles = "admin")]
     [ApiController]
     [Route("[controller]")]
     public class EvidenciaController : ControllerBase

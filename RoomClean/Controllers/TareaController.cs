@@ -1,4 +1,5 @@
 ﻿using Domain.DTOS;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoomClean.Services;
 
@@ -26,18 +27,22 @@ namespace RoomClean.Controllers
             var response = await _adminServicio.ObtenerPorId(id);
             return Ok(response);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("create")]
         public async Task<ActionResult> Crear([FromBody] TareaDto request)
         {
             var response = await _adminServicio.Crear(request);
             return Ok(response);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Editar([FromBody] TareaDto request, int id)
         {
             var response = await _adminServicio.Editar(request, id);
             return Ok(response);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {
