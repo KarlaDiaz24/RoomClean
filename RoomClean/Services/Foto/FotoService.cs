@@ -34,7 +34,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Foto response = await _context.foto.FirstOrDefaultAsync(x => x.Id == id);
+                Foto response = await _context.Fotos.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Foto>(response);
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace RoomClean.Services
                     FotoUrl = request.FotoUrl,
                     FkEvidencia = request.FkEvidencia,
                 };
-                _context.foto.Add(foto);
+                _context.Fotos.Add(foto);
                 await _context.SaveChangesAsync();
 
                 return new Response<Foto>(foto);
@@ -65,7 +65,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Foto foto = await _context.foto.FirstOrDefaultAsync(x => x.Id == id);
+                Foto foto = await _context.Fotos.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (foto == null)
                 {
@@ -75,7 +75,7 @@ namespace RoomClean.Services
                 foto.FotoUrl = request.FotoUrl;
                 foto.FkEvidencia = request.FkEvidencia;
 
-                _context.foto.Update(foto);
+                _context.Fotos.Update(foto);
                 await _context.SaveChangesAsync();
                 return new Response<Foto>(foto);
             }
@@ -88,14 +88,14 @@ namespace RoomClean.Services
         {
             try
             {
-                Foto foto = await _context.foto.FirstOrDefaultAsync(x => x.Id == id);
+                Foto foto = await _context.Fotos.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (foto == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.foto.Remove(foto);
+                _context.Fotos.Remove(foto);
                 await _context.SaveChangesAsync();
                 return new Response<Foto>(foto);
             }
