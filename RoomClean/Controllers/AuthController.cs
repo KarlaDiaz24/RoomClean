@@ -24,12 +24,23 @@ namespace RoomClean.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _context;
-
+        private readonly SignInManager<IdentityUser> _signInManager;
         public AuthController(IUsuarioService usuarioService, IConfiguration configuration, ApplicationDBContext context)
+        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            _usuarioService = usuarioService;
-            _configuration = configuration;
             _context = context;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost("register")]
@@ -39,17 +50,6 @@ namespace RoomClean.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var usuarioDto = new UsuarioDto
-            {
-                Nombre = model.Nombre,
-                Apellido = model.Apellido,
-                Número = model.Número,
-                Correo = model.Correo,
-                Contraseña = model.Contraseña,
-                FKRol = model.FKRol
-            };
-
             var result = await _usuarioService.CrearUsuario(usuarioDto);
             if (!result.Succeded)
             {
@@ -58,12 +58,12 @@ namespace RoomClean.Controllers
 
             return Ok(new { result = "Usuario creado" });
         }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
-        {
-            if (!ModelState.IsValid)
-            {
+                Número = model.Número,
+                Correo = model.Correo,
+                await _usuarioService.CrearUsuario(usuarioDto);
+                return Ok(new { result = "User created successfully" });
+            }
+            return BadRequest(result.Errors);
                 return BadRequest(ModelState);
             }
 
@@ -74,6 +74,17 @@ namespace RoomClean.Controllers
 
             if (usuario == null)
             {
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+            }
+
+        [HttpPost("login")]
+                var token = GenerateJwtToken(model.Email);
+                return Ok(new { token });
+            }
+            return Unauthorized();
+        }
+            return Unauthorized();
+        }
                 return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
             }
 
@@ -118,20 +129,20 @@ namespace RoomClean.Controllers
         [EmailAddress(ErrorMessage = "El correo no es válido.")]
         public string? Correo { get; set; }
 
-        [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
-        public string? Contraseña { get; set; }
-        public string? Foto { get; set; }
-
-        [Required(ErrorMessage = "Se requiere un rol")]
-        public int FKRol { get; set; }
-    }
-
-    public class LoginModel
-    {
         [Required(ErrorMessage = "No se ha ingresado ningun correo")]
         public string Correo { get; set; }
 
+        [Required(ErrorMessage = "La contraseña es obligatoria.")]
+        public string Contraseña { get; set; }
+
+        [Required(ErrorMessage = "Se requiere un rol")]
+        public int FKRol { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
+        public string Password { get; set; }
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         public string Contraseña { get; set; }
     }
