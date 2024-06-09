@@ -34,7 +34,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia response = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia response = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Evidencia>(response);
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace RoomClean.Services
                     Comentarios = request.Comentarios,
                     FKTarea = request.FKTarea,
                 };
-                _context.evidencia.Add(evidencia);
+                _context.Evidencias.Add(evidencia);
                 await _context.SaveChangesAsync();
 
                 return new Response<Evidencia>(evidencia);
@@ -65,7 +65,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
@@ -75,7 +75,7 @@ namespace RoomClean.Services
                 evidencia.Comentarios = request.Comentarios;
                 evidencia.FKTarea = request.FKTarea;
 
-                _context.evidencia.Update(evidencia);
+                _context.Evidencias.Update(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }
@@ -88,14 +88,14 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.evidencia.Remove(evidencia);
+                _context.Evidencias.Remove(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }
