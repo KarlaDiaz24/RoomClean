@@ -48,23 +48,19 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConection")));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDBContext>()
+    .AddDefaultTokenProviders();
 
-// Add application services
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
-builder.Services.AddTransient<IEvidenciaService, EvidenciaService>();
-builder.Services.AddTransient<IFotoService, FotoService>();
 
-// Add CORS policy
-builder.Services.AddCors(policyBuilder =>
-    policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
-
-
-
-// Add JWT authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

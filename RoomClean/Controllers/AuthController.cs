@@ -1,8 +1,6 @@
 ﻿using Domain.DTOS;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using RoomClean.Context;
@@ -23,23 +21,14 @@ namespace RoomClean.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly IConfiguration _configuration;
-        private readonly ApplicationDBContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, ApplicationDBContext context)
-        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+
         public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            _context = context;
-            _signInManager = signInManager;
-            _signInManager = signInManager;
-            _signInManager = signInManager;
-            _signInManager = signInManager;
-            _signInManager = signInManager;
+            _usuarioService = usuarioService;
+            _configuration = configuration;
             _userManager = userManager;
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _signInManager = signInManager;
             _signInManager = signInManager;
         }
 
@@ -48,45 +37,33 @@ namespace RoomClean.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
-            }
-            var result = await _usuarioService.CrearUsuario(usuarioDto);
-            if (!result.Succeded)
-            {
-                return BadRequest(new { errors = result.Message });
-            }
+                var usuarioDto = new UsuarioDto
+                {
+                    Nombre = model.Nombre,
+                    Apellido = model.Apellido,
+                    Número = model.Número,
+                    Correo = model.Email,
+                    Contraseña = model.Password,
+                    FKRol = model.FKRol // Asignar el rol adecuado
+                };
 
-            return Ok(new { result = "Usuario creado" });
-        }
-                Número = model.Número,
-                Correo = model.Correo,
                 await _usuarioService.CrearUsuario(usuarioDto);
                 return Ok(new { result = "User created successfully" });
             }
             return BadRequest(result.Errors);
-                return BadRequest(ModelState);
-            }
-
-            string user = model.Correo.ToString();
-            string hashedPassword = ApplicationDBContext.ComputeSha256Hash(model.Contraseña);
-
-            Usuario usuario = _context.Usuarios.FirstOrDefault(x => x.Correo == user && x.Contraseña == hashedPassword);
-
-            if (usuario == null)
-            {
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
-            }
+        }
 
         [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            if (result.Succeeded)
+            {
                 var token = GenerateJwtToken(model.Email);
                 return Ok(new { token });
             }
             return Unauthorized();
         }
-            return Unauthorized();
-        }
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
-            }
 
             var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var claims = new[]
@@ -115,32 +92,24 @@ namespace RoomClean.Controllers
 
     public class RegisterModel
     {
-        [Required(ErrorMessage = "El nombre es obligatorio.")]
-        public string? Nombre { get; set; }
-
-        [Required(ErrorMessage = "El apellido es obligatorio.")]
-        public string? Apellido { get; set; }
-
-        [Required(ErrorMessage = "El número es obligatorio.")]
-        [Phone(ErrorMessage = "El número de teléfono no es válido.")]
-        public string? Número { get; set; }
-
-        [Required(ErrorMessage = "El correo es obligatorio.")]
-        [EmailAddress(ErrorMessage = "El correo no es válido.")]
-        public string? Correo { get; set; }
-
-        [Required(ErrorMessage = "No se ha ingresado ningun correo")]
-        public string Correo { get; set; }
-
-        [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        public string Contraseña { get; set; }
-
-        [Required(ErrorMessage = "Se requiere un rol")]
-        public int FKRol { get; set; }
+        [Required]
+        public string Nombre { get; set; }
+        [Required]
+        public string Apellido { get; set; }
+        [Required]
+        public string Número { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+        [Required]
+        public int FKRol { get; set; } // Role ID
+    }
+
+    public class LoginModel
+    {
+        [Required]
+        public string Email { get; set; }
         [Required]
         public string Password { get; set; }
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
