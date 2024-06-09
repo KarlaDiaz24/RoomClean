@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoomClean.Services;
+using Domain.Entities;
 
 namespace RoomClean.Controllers
 {
@@ -24,5 +25,5 @@ namespace RoomClean.Controllers
         }
     }
 
-    
+
 }
