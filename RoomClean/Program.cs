@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RoomClean.Context;
 using RoomClean.Services;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sales API", Version = "v1" });
@@ -62,19 +61,10 @@ builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
         policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddIdentity<Usuario, Roles>(options =>
-{
 
-})
-.AddEntityFrameworkStores<ApplicationDBContext>()
-.AddDefaultTokenProviders();
 
 // Add JWT authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters

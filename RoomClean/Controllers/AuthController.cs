@@ -1,11 +1,16 @@
 ﻿using Domain.DTOS;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using RoomClean.Context;
 using RoomClean.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +23,13 @@ namespace RoomClean.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDBContext _context;
 
-        public AuthController(IUsuarioService usuarioService, IConfiguration configuration)
+        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, ApplicationDBContext context)
         {
             _usuarioService = usuarioService;
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
@@ -49,7 +56,7 @@ namespace RoomClean.Controllers
                 return BadRequest(new { errors = result.Message });
             }
 
-            return Ok(new { result = "User created successfully" });
+            return Ok(new { result = "Usuario creado" });
         }
 
         [HttpPost("login")]
@@ -60,22 +67,24 @@ namespace RoomClean.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _usuarioService.ValidarUsuario(model.Email, model.Password);
-            if (!result.Succeded)
+            string user = model.Correo.ToString();
+            string hashedPassword = ApplicationDBContext.ComputeSha256Hash(model.Contraseña);
+
+            Usuario usuario = _context.Usuarios.FirstOrDefault(x => x.Correo == user && x.Contraseña == hashedPassword);
+
+            if (usuario == null)
             {
-                return Unauthorized(new { message = result.Message });
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
             }
 
-            var token = GenerateJwtToken(model.Email);
-            return Ok(new { token });
-        }
-
-        private string GenerateJwtToken(string email)
-        {
+            var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                new Claim("id", usuario.Id.ToString()),
+                new Claim("rol", usuario.FKRol.ToString()),
+                new Claim("usuario", usuario.Correo)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -88,8 +97,9 @@ namespace RoomClean.Controllers
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
+
     }
 
     public class RegisterModel
@@ -120,9 +130,9 @@ namespace RoomClean.Controllers
     public class LoginModel
     {
         [Required(ErrorMessage = "No se ha ingresado ningun correo")]
-        public string Email { get; set; }
+        public string Correo { get; set; }
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        public string Password { get; set; }
+        public string Contraseña { get; set; }
     }
 }
