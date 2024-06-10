@@ -19,7 +19,7 @@ namespace RoomClean.Controllers
         public DashboardEmpleadoController(ITareaService tareasService, ApplicationDBContext context)
         {
             _tareas = tareasService;
-            _context = context;
+            _context = context; 
         }
         [HttpGet("list")]
         public async Task<IActionResult> ObtenerLista()

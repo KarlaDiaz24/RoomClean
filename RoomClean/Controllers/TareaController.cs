@@ -15,7 +15,7 @@ namespace RoomClean.Controllers
     {
         private readonly ITareaService _adminServicio;
         private readonly ApplicationDBContext _context;
-        public TareaController(ITareaService adminService, ApplicationDBContext context)
+        public TareaController(ITareaService adminService,ApplicationDBContext  context)
         {
             _adminServicio = adminService;
             _context = context;

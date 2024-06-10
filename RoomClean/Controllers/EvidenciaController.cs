@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace RoomClean.Controllers
 {
-
+    
     [ApiController]
     [Route("[controller]")]
     [Authorize]
@@ -17,7 +17,7 @@ namespace RoomClean.Controllers
     {
         private readonly IEvidenciaService _evidenciaService;
         private readonly ApplicationDBContext _context;
-        public EvidenciaController(IEvidenciaService evidenciaService, ApplicationDBContext context)
+        public EvidenciaController(IEvidenciaService evidenciaService,ApplicationDBContext context)
         {
             _evidenciaService = evidenciaService;
             _context = context;
