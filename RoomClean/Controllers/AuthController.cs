@@ -1,6 +1,7 @@
 ﻿using Domain.DTOS;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -24,7 +25,7 @@ namespace RoomClean.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _context;
 
-        public AuthController(IUsuarioService usuarioService, IConfiguration configuration)
+        public AuthController(IUsuarioService usuarioService, IConfiguration configuration, ApplicationDBContext context)
         {
             _usuarioService = usuarioService;
             _configuration = configuration;
@@ -55,7 +56,7 @@ namespace RoomClean.Controllers
                 return BadRequest(new { errors = result.Message });
             }
 
-            return Ok(new { result = "User created successfully" });
+            return Ok(new { result = "Usuario creado" });
         }
 
         [HttpPost("login")]
@@ -66,15 +67,15 @@ namespace RoomClean.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _usuarioService.ValidarUsuario(model.Email, model.Password);
-            if (!result.Succeded)
-            {
-                return Unauthorized(new { message = result.Message });
-            }
+            string user = model.Correo.ToString();
+            string hashedPassword = ApplicationDBContext.ComputeSha256Hash(model.Contraseña);
 
-            var token = GenerateJwtToken(model.Email);
-            return Ok(new { token });
-        }
+            Usuario usuario = _context.Usuarios.FirstOrDefault(x => x.Correo == user && x.Contraseña == hashedPassword);
+
+            if (usuario == null)
+            {
+                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+            }
 
             var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var claims = new[]
@@ -129,10 +130,8 @@ namespace RoomClean.Controllers
     public class LoginModel
     {
         [Required(ErrorMessage = "No se ha ingresado ningun correo")]
-        public string Email { get; set; }
+        public string Correo { get; set; }
 
-        [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        public string Password { get; set; }
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         public string Contraseña { get; set; }
     }
