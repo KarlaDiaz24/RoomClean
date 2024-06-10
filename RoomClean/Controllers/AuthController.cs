@@ -21,15 +21,13 @@ namespace RoomClean.Controllers
     {
         private readonly IUsuarioService _usuarioService;
         private readonly IConfiguration _configuration;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDBContext _context;
 
         public AuthController(IUsuarioService usuarioService, IConfiguration configuration, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _usuarioService = usuarioService;
             _configuration = configuration;
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _context = context;
         }
 
         [HttpPost("register")]
