@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RoomClean.Services;
 
 namespace RoomClean.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class UsuarioController : ControllerBase
     {
         public readonly IUsuarioService _usuarioService;
