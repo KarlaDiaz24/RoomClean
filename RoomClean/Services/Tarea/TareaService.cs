@@ -35,7 +35,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Tarea response = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea response = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Tarea>(response);
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace RoomClean.Services
                     Estatus = request.Estatus,
                     FkUsuario = request.FkUsuario,
                 };
-                _context.tarea.Add(tarea);
+                _context.Tareas.Add(tarea);
                 await _context.SaveChangesAsync();
 
                 return new Response<Tarea>(tarea);
@@ -68,7 +68,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Tarea tarea = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea tarea = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (tarea == null)
                 {
@@ -80,7 +80,7 @@ namespace RoomClean.Services
                 tarea.Estatus = request.Estatus;
                 tarea.FkUsuario = request.FkUsuario;
 
-                _context.tarea.Update(tarea);
+                _context.Tareas.Update(tarea);
                 await _context.SaveChangesAsync();
                 return new Response<Tarea>(tarea);
             }
@@ -93,14 +93,14 @@ namespace RoomClean.Services
         {
             try
             {
-                Tarea tarea = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea tarea = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (tarea == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.tarea.Remove(tarea);
+                _context.Tareas.Remove(tarea);
                 await _context.SaveChangesAsync();
                 return new Response<Tarea>(tarea);
             }

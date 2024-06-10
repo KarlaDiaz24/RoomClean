@@ -2,29 +2,30 @@ using Domain.DTOS;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using RoomClean.Context;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RoomClean.Services
 {
     public class UsuarioService : IUsuarioService
     {
-
         private readonly ApplicationDBContext _context;
         public UsuarioService(ApplicationDBContext context)
         {
             _context = context;
         }
-        //Lista de usuarios
+
         public async Task<Response<List<Usuario>>> ObtenerUsuarios()
         {
             try
             {
-                List<Usuario> Response = await _context.usuario.Include(x => x.Roles).ToListAsync();
-
-                return new Response<List<Usuario>>(Response);
+                List<Usuario> usuarios = await _context.Usuarios.Include(x => x.Roles).ToListAsync();
+                return new Response<List<Usuario>>(usuarios);
             }
             catch (Exception ex)
             {
-                throw new Exception("Sucedio un error" + ex.Message);
+                throw new Exception("Sucedió un error: " + ex.Message);
             }
         }
 
@@ -32,12 +33,12 @@ namespace RoomClean.Services
         {
             try
             {
-                Usuario  res = await _context.usuario.FirstOrDefaultAsync(x => x.Id == id);
-                return new Response<Usuario>(res);
+                Usuario usuario = await _context.Usuarios.Include(x => x.Roles).FirstOrDefaultAsync(x => x.Id == id);
+                return new Response<Usuario>(usuario);
             }
             catch (Exception ex)
             {
-                throw new Exception("Sucedio un error" + ex.Message);
+                throw new Exception("Sucedió un error: " + ex.Message);
             }
         }
 
@@ -45,66 +46,58 @@ namespace RoomClean.Services
         {
             try
             {
+                string hashedPassword = ApplicationDBContext.ComputeSha256Hash(request.Contraseña);
+
                 Usuario usuario = new Usuario()
                 {
                     Nombre = request.Nombre,
                     Apellido = request.Apellido,
                     Número = request.Número,
                     Correo = request.Correo,
-                    Contraseña= request.Contraseña,
-                    Foto= request.Foto,
+                    Contraseña = hashedPassword,
+                    Foto = request.Foto,
                     FKRol = request.FKRol
                 };
 
-                _context.usuario.Add(usuario);
+                _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
 
                 return new Response<Usuario>(usuario);
-
             }
             catch (Exception ex)
             {
-                throw new Exception("Succedio un error " + ex.Message);
+                throw new Exception("Sucedió un error: " + ex.Message);
             }
         }
 
-        public async Task<Response<Usuario>> ActualizarUsuario(int id, UsuarioDto usuario)
+        public async Task<Response<Usuario>> ActualizarUsuario(int id, UsuarioDto usuarioDto)
         {
             try
             {
-                Usuario us = await _context.usuario.FirstOrDefaultAsync(x => x.Id == id);
+                string hashedPassword = ApplicationDBContext.ComputeSha256Hash(usuarioDto.Contraseña);
+                Usuario usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
 
-                if (us != null)
+                if (usuario != null)
                 {
-                    us.Nombre = usuario.Nombre;
-                    us.Apellido = usuario.Apellido;
-                    us.Número = usuario.Número;
-                    us.Correo = usuario.Correo;
-                    us.Contraseña = usuario.Contraseña;
-                    us.Foto = usuario.Foto;
-                    us.FKRol = usuario.FKRol;
-                    _context.SaveChanges();
+                    usuario.Nombre = usuarioDto.Nombre;
+                    usuario.Apellido = usuarioDto.Apellido;
+                    usuario.Número = usuarioDto.Número;
+                    usuario.Correo = usuarioDto.Correo;
+                    usuario.Contraseña = hashedPassword;
+                    usuario.Foto = usuarioDto.Foto;
+                    usuario.FKRol = usuarioDto.FKRol;
+
+                    _context.Usuarios.Update(usuario);
+                    await _context.SaveChangesAsync();
+
+                    return new Response<Usuario>(usuario);
                 }
 
-                Usuario newUsuario = new Usuario()
-                {
-                    Nombre = usuario.Nombre,
-                    Apellido = usuario.Apellido,
-                    Número = usuario.Número,
-                    Correo = usuario.Correo,
-                    Contraseña = usuario.Contraseña,
-                    Foto = usuario.Foto,
-                    FKRol = usuario.FKRol
-                };
-
-                _context.usuario.Update(us);
-                await _context.SaveChangesAsync();
-
-                return new Response<Usuario>(newUsuario);
+                return new Response<Usuario>("Usuario no encontrado");
             }
             catch (Exception ex)
             {
-                throw new Exception("Sucedio un error al actualizar" + ex.Message);
+                throw new Exception("Sucedió un error al actualizar: " + ex.Message);
             }
         }
 
@@ -112,22 +105,42 @@ namespace RoomClean.Services
         {
             try
             {
-                Usuario us = await _context.usuario.FirstOrDefaultAsync(x => x.Id == id);
-                if (us != null)
+                Usuario usuario = await _context.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+                if (usuario != null)
                 {
-                    _context.usuario.Remove(us);
+                    _context.Usuarios.Remove(usuario);
                     await _context.SaveChangesAsync();
-                    return new Response<Usuario>("Usuario eliminado:" + us.Nombre.ToString());
+                    return new Response<Usuario>("Usuario eliminado: " + usuario.Nombre);
                 }
 
-                return new Response<Usuario>("Usuario no encontrado" + id);
-
+                return new Response<Usuario>("Usuario no encontrado");
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al eliminar" + ex.Message);
+                throw new Exception("Error al eliminar: " + ex.Message);
             }
-
         }
+
+        public async Task<Response<Usuario>> ValidarUsuario(string correo, string contraseña)
+        {
+            try
+            {
+                string hashedPassword = ApplicationDBContext.ComputeSha256Hash(contraseña);
+                Usuario usuario = await _context.Usuarios.Include(x => x.Roles)
+                    .FirstOrDefaultAsync(x => x.Correo == correo && x.Contraseña == hashedPassword);
+
+                if (usuario != null)
+                {
+                    return new Response<Usuario>(usuario);
+                }
+
+                return new Response<Usuario>("Usuario o contraseña incorrectos");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al validar el usuario: " + ex.Message);
+            }
+        }
+
     }
 }
