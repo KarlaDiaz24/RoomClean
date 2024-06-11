@@ -47,6 +47,7 @@ namespace RoomClean.Controllers
                 Número = model.Número,
                 Correo = model.Correo,
                 Contraseña = model.Contraseña,
+                Foto = model.Foto,
                 FKRol = model.FKRol
             };
 
