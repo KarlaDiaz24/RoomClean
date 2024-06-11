@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoomClean.Services;
-using Domain.Entities   ;
+using Domain.Entities;
 using System.Security.Claims;
 using RoomClean.Context;
 using Microsoft.Extensions.Configuration;
@@ -29,14 +29,14 @@ namespace RoomClean.Controllers
         {
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var rtoken = Jwt.Validartoken(identity,_context);
+            var rtoken = Jwt.Validartoken(identity, _context);
 
             if (!rtoken.success)
                 return BadRequest(new { success = false, message = rtoken.message });
 
             Usuario usuario = rtoken.result;
 
-            if (usuario.FKRol!= 1) 
+            if (usuario.FKRol != 1)
             {
                 return BadRequest("No tienes permisos para esta accion");
 
