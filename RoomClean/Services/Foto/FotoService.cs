@@ -15,7 +15,7 @@ namespace RoomClean.Services
             _context = context;
         }
 
-        //Lista de usuarios
+        //Lista de fotos
         public async Task<Response<List<Foto>>> ObtenerLista()
         {
             try
