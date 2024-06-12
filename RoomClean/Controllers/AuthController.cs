@@ -1,5 +1,6 @@
 ﻿using Domain.DTOS;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,8 +34,24 @@ namespace RoomClean.Controllers
         }
 
         [HttpPost("register")]
+        [Authorize]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
+
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rtoken = Jwt.Validartoken(identity, _context);
+
+            if (!rtoken.success)
+                return BadRequest(new { success = false, message = rtoken.message });
+
+            Usuario usuario = rtoken.result;
+
+            if (usuario.FKRol != 1)
+            {
+                return BadRequest("No tienes permisos para esta accion");
+
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
