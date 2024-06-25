@@ -16,12 +16,14 @@ namespace RoomClean.Services
         }
 
         //Lista de usuarios
-        public async Task<Response<List<Evidencia>>> ObtenerLista()
+        public async Task<Response<List<Evidencia>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Evidencia> response = new List<Evidencia>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>("PAEvidencia", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>(
+                    "PAEvidencia", 
+                    new { Id }, commandType: CommandType.StoredProcedure);
                 response = result.ToList();
                 return new Response<List<Evidencia>>(response);
             }
@@ -34,7 +36,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia response = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia response = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Evidencia>(response);
             }
             catch (Exception ex)
@@ -51,7 +53,7 @@ namespace RoomClean.Services
                     Comentarios = request.Comentarios,
                     FKTarea = request.FKTarea,
                 };
-                _context.evidencia.Add(evidencia);
+                _context.Evidencias.Add(evidencia);
                 await _context.SaveChangesAsync();
 
                 return new Response<Evidencia>(evidencia);
@@ -65,7 +67,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
@@ -75,7 +77,7 @@ namespace RoomClean.Services
                 evidencia.Comentarios = request.Comentarios;
                 evidencia.FKTarea = request.FKTarea;
 
-                _context.evidencia.Update(evidencia);
+                _context.Evidencias.Update(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }
@@ -88,14 +90,14 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.evidencia.Remove(evidencia);
+                _context.Evidencias.Remove(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }

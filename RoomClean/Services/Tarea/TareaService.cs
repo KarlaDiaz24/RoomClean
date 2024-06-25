@@ -17,25 +17,30 @@ namespace RoomClean.Services
         }
 
         //Lista de usuarios
-        public async Task<Response<List<Tarea>>> ObtenerLista()
+        public async Task<Response<List<Tarea>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Tarea> response = new List<Tarea>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Tarea>("PATarea", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Tarea>(
+                    "PATarea",
+                    new { UserId = Id },
+                    commandType: CommandType.StoredProcedure
+                );
                 response = result.ToList();
                 return new Response<List<Tarea>>(response);
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
+
         public async Task<Response<Tarea>> ObtenerPorId(int id)
         {
             try
             {
-                Tarea response = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea response = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Tarea>(response);
             }
             catch (Exception ex)
@@ -54,7 +59,7 @@ namespace RoomClean.Services
                     Estatus = request.Estatus,
                     FkUsuario = request.FkUsuario,
                 };
-                _context.tarea.Add(tarea);
+                _context.Tareas.Add(tarea);
                 await _context.SaveChangesAsync();
 
                 return new Response<Tarea>(tarea);
@@ -68,7 +73,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Tarea tarea = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea tarea = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (tarea == null)
                 {
@@ -80,7 +85,7 @@ namespace RoomClean.Services
                 tarea.Estatus = request.Estatus;
                 tarea.FkUsuario = request.FkUsuario;
 
-                _context.tarea.Update(tarea);
+                _context.Tareas.Update(tarea);
                 await _context.SaveChangesAsync();
                 return new Response<Tarea>(tarea);
             }
@@ -93,14 +98,14 @@ namespace RoomClean.Services
         {
             try
             {
-                Tarea tarea = await _context.tarea.FirstOrDefaultAsync(x => x.Id == id);
+                Tarea tarea = await _context.Tareas.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (tarea == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.tarea.Remove(tarea);
+                _context.Tareas.Remove(tarea);
                 await _context.SaveChangesAsync();
                 return new Response<Tarea>(tarea);
             }
