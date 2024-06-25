@@ -16,12 +16,14 @@ namespace RoomClean.Services
         }
 
         //Lista de fotos
-        public async Task<Response<List<Foto>>> ObtenerLista()
+        public async Task<Response<List<Foto>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Foto> response = new List<Foto>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Foto>("PAFoto", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Foto>(
+                    "PAFoto", 
+                    new { Id }, commandType: CommandType.StoredProcedure);
                 response = result.ToList();
                 return new Response<List<Foto>>(response);
             }
