@@ -17,20 +17,25 @@ namespace RoomClean.Services
         }
 
         //Lista de usuarios
-        public async Task<Response<List<Tarea>>> ObtenerLista()
+        public async Task<Response<List<Tarea>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Tarea> response = new List<Tarea>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Tarea>("PATarea", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Tarea>(
+                    "PATarea",
+                    new { UserId = Id },
+                    commandType: CommandType.StoredProcedure
+                );
                 response = result.ToList();
                 return new Response<List<Tarea>>(response);
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
+
         public async Task<Response<Tarea>> ObtenerPorId(int id)
         {
             try
