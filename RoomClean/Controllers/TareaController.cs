@@ -32,7 +32,7 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-            var response = await _adminServicio.ObtenerLista();
+            var response = await _adminServicio.ObtenerLista(usuario.Id);
             return Ok(response);
         }
 
