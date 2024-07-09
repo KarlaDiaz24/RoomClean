@@ -22,8 +22,8 @@ namespace RoomClean.Controllers
             _context = context;
         }
 
-        [HttpGet("list")]
-        public async Task<IActionResult> ObtenerLista()
+        [HttpGet("list/id")]
+        public async Task<IActionResult> ObtenerLista(int Id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var rtoken = Jwt.Validartoken(identity, _context);
@@ -33,10 +33,14 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-            var response = await _fotoService.ObtenerLista();
+<<<<<<< HEAD
+            var response = await _fotoService.ObtenerLista(usuario.Id);
+=======
+            var response = await _fotoService.ObtenerLista(Id);
+>>>>>>> origin/Develop
             return Ok(response);
         }
-        [HttpGet("list/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;

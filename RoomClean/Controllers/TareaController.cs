@@ -32,12 +32,29 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-            var response = await _adminServicio.ObtenerLista();
+            var response = await _adminServicio.ObtenerLista(usuario.Id);
+<<<<<<< HEAD
+=======
+            return Ok(response);
+        }
+        [HttpGet("list/{id}")]
+        public async Task<IActionResult> ObtenerListaPorId(int id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var rtoken = Jwt.Validartoken(identity, _context);
+
+            if (!rtoken.success)
+                return BadRequest(new { success = false, message = rtoken.message });
+
+            Usuario usuario = rtoken.result;
+
+            var response = await _adminServicio.ObtenerLista(id);
+>>>>>>> origin/Develop
             return Ok(response);
         }
 
 
-        [HttpGet("list/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
 

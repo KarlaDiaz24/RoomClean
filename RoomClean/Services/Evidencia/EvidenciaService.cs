@@ -16,12 +16,14 @@ namespace RoomClean.Services
         }
 
         //Lista de usuarios
-        public async Task<Response<List<Evidencia>>> ObtenerLista()
+        public async Task<Response<List<Evidencia>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Evidencia> response = new List<Evidencia>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>("PAEvidencia", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>(
+                    "PAEvidencia", 
+                    new { Id }, commandType: CommandType.StoredProcedure);
                 response = result.ToList();
                 return new Response<List<Evidencia>>(response);
             }
