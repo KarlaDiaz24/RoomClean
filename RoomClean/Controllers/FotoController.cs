@@ -34,8 +34,6 @@ namespace RoomClean.Controllers
             Usuario usuario = rtoken.result;
 
 
-            var response = await _fotoService.ObtenerLista(usuario.Id);
-
             var response = await _fotoService.ObtenerLista(Id);
 
             return Ok(response);
