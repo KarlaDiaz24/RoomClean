@@ -33,8 +33,7 @@ namespace RoomClean.Controllers
             Usuario usuario = rtoken.result;
 
             var response = await _adminServicio.ObtenerLista(usuario.Id);
-<<<<<<< HEAD
-=======
+
             return Ok(response);
         }
         [HttpGet("list/{id}")]
@@ -49,7 +48,6 @@ namespace RoomClean.Controllers
             Usuario usuario = rtoken.result;
 
             var response = await _adminServicio.ObtenerLista(id);
->>>>>>> origin/Develop
             return Ok(response);
         }
 

@@ -33,11 +33,11 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-<<<<<<< HEAD
+
             var response = await _fotoService.ObtenerLista(usuario.Id);
-=======
+
             var response = await _fotoService.ObtenerLista(Id);
->>>>>>> origin/Develop
+
             return Ok(response);
         }
         [HttpGet("{id}")]

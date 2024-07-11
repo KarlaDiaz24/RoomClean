@@ -34,11 +34,9 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-<<<<<<< HEAD
-            var response = await _evidenciaService.ObtenerLista(usuario.Id);
-=======
+
             var response = await _evidenciaService.ObtenerLista(Id);
->>>>>>> origin/Develop
+
             return Ok(response);
         }
 
