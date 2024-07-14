@@ -33,7 +33,10 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
+
+
             var response = await _fotoService.ObtenerLista(Id);
+
             return Ok(response);
         }
         [HttpGet("{id}")]
@@ -52,9 +55,9 @@ namespace RoomClean.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult> Crear([FromBody] FotoDto request)
+        
+        public async Task<ActionResult> Crear([FromForm] FotoDto request)
         {
-
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var rtoken = Jwt.Validartoken(identity, _context);
 
@@ -65,14 +68,21 @@ namespace RoomClean.Controllers
 
             if (usuario.FKRol != 2)
             {
-                return BadRequest("No tienes permisos para esta accion");
-
+                return BadRequest("No tienes permisos para esta acción");
             }
 
-            var response = await _fotoService.Crear(request);
-            return Ok(response);
-        }
+            // Aquí manejas la lógica para guardar la URL de la foto en lugar del objeto IFormFile
+            var foto = new Foto
+            {
+                FotoUrl = request.FotoUrl,  // Asignar la URL de la foto recibida
+                FkEvidencia = request.FkEvidencia
+            };
 
+            _context.Fotos.Add(foto);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Foto guardada correctamente", fotoUrl = foto.FotoUrl });
+        }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Editar([FromBody] FotoDto request, int id)

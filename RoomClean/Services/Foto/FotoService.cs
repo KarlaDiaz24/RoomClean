@@ -46,23 +46,18 @@ namespace RoomClean.Services
         }
         public async Task<Response<Foto>> Crear(FotoDto request)
         {
-            try
+            var foto = new Foto
             {
-                Foto foto = new Foto()
-                {
-                    FotoUrl = request.FotoUrl,
-                    FkEvidencia = request.FkEvidencia,
-                };
-                _context.Fotos.Add(foto);
-                await _context.SaveChangesAsync();
+                FotoUrl = request.FotoUrl,
+                FkEvidencia = request.FkEvidencia
+            };
 
-                return new Response<Foto>(foto);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Ocurrio un error" + ex.Message);
-            }
+            _context.Fotos.Add(foto);
+            await _context.SaveChangesAsync();
+
+            return new Response<Foto>(foto); // Devolver el ID de la foto guardada si es necesario
         }
+
         public async Task<Response<Foto>> Editar(FotoDto request, int id)
         {
             try
@@ -71,7 +66,7 @@ namespace RoomClean.Services
 
                 if (foto == null)
                 {
-                    throw new Exception("No existe el usuario");
+                    throw new Exception("No existe la evidencia");
                 }
 
                 foto.FotoUrl = request.FotoUrl;
