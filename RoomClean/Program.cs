@@ -56,6 +56,7 @@ builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IEvidenciaService, EvidenciaService>();
 builder.Services.AddTransient<IFotoService, FotoService>();
 builder.Services.AddTransient<ITareaService, TareaService>();
+builder.Services.AddTransient<IInventarioService, InventarioService>();
 
 // Add CORS policy
 builder.Services.AddCors(policyBuilder =>
