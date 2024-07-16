@@ -71,10 +71,9 @@ namespace RoomClean.Controllers
                 return BadRequest("No tienes permisos para esta acción");
             }
 
-            // Aquí manejas la lógica para guardar la URL de la foto en lugar del objeto IFormFile
             var foto = new Foto
             {
-                FotoUrl = request.FotoUrl,  // Asignar la URL de la foto recibida
+                FotoUrl = request.FotoUrl,  
                 FkEvidencia = request.FkEvidencia
             };
 
