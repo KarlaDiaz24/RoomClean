@@ -14,6 +14,7 @@ namespace RoomClean.Context
         public DbSet<Tarea> Tareas { get; set; }
         public DbSet<Evidencia> Evidencias { get; set; }
         public DbSet<Foto> Fotos { get; set; }
+        public DbSet<Inventario> Articulos { get; set; }
 
         public static string ComputeSha256Hash(string rawData)
         {

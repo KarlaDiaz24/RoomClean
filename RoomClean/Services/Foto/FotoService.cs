@@ -89,7 +89,7 @@ namespace RoomClean.Services
 
                 if (foto == null)
                 {
-                    throw new Exception("No existe el usuario");
+                    throw new Exception("No existe la foto");
                 }
 
                 _context.Fotos.Remove(foto);
