@@ -52,6 +52,7 @@ namespace RoomClean.Services
                 {
                     Comentarios = request.Comentarios,
                     FKTarea = request.FKTarea,
+                    CompletedDescriptions = request.CompletedDescriptions // Asegúrate de asignar los checks marcados aquí
                 };
                 _context.Evidencias.Add(evidencia);
                 await _context.SaveChangesAsync();
@@ -60,9 +61,10 @@ namespace RoomClean.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
+
         public async Task<Response<Evidencia>> Editar(EvidenciaDto request, int id)
         {
             try
@@ -71,11 +73,12 @@ namespace RoomClean.Services
 
                 if (evidencia == null)
                 {
-                    throw new Exception("No existe el usuario");
+                    throw new Exception("No existe la evidencia");
                 }
 
                 evidencia.Comentarios = request.Comentarios;
                 evidencia.FKTarea = request.FKTarea;
+                evidencia.CompletedDescriptions = request.CompletedDescriptions; // Actualiza los checks marcados
 
                 _context.Evidencias.Update(evidencia);
                 await _context.SaveChangesAsync();
@@ -83,7 +86,7 @@ namespace RoomClean.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
         public async Task<Response<Evidencia>> Eliminar(int id)

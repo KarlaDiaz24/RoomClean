@@ -10,6 +10,7 @@ namespace Domain.DTOS
     public class EvidenciaDto
     {
         public string? Comentarios { get; set; }
+        public string CompletedDescriptions { get; set; }
         public int FKTarea { get; set; }
     }
 }

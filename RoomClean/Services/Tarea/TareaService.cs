@@ -55,7 +55,7 @@ namespace RoomClean.Services
                 Tarea tarea = new Tarea()
                 {
                     Nombre = request.Nombre,
-                    Descripcion = request.Descripcion,
+                    Descripcion = string.Join(";", request.Descripcion),
                     Estatus = request.Estatus,
                     FkUsuario = request.FkUsuario,
                 };
