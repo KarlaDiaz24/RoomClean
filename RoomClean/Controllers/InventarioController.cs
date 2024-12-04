@@ -2,28 +2,30 @@
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RoomClean.Context;
 using RoomClean.Services;
 using System.Security.Claims;
 
 namespace RoomClean.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
+    [ApiController]
     [Authorize]
-    public class TareaController : ControllerBase
+    public class InventarioController : ControllerBase
     {
-        private readonly ITareaService _adminServicio;
+        private readonly IInventarioService _inventarioService;
         private readonly ApplicationDBContext _context;
-        public TareaController(ITareaService adminService,ApplicationDBContext  context)
+        public InventarioController(IInventarioService inventarioService, ApplicationDBContext context)
         {
-            _adminServicio = adminService;
+            _inventarioService = inventarioService;
             _context = context;
         }
 
         [HttpGet("list")]
         public async Task<IActionResult> ObtenerLista()
         {
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var rtoken = Jwt.Validartoken(identity, _context);
 
@@ -32,28 +34,26 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-            var response = await _adminServicio.ObtenerLista(usuario.Id);
+            if (usuario.FKRol != 1)
+            {
+                return BadRequest("No tienes permisos para esta accion");
 
-            return Ok(response);
+            }
+
+            try
+            {
+                var response = await _inventarioService.ObtenerLista();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
-        [HttpGet("list/{id}")]
-        public async Task<IActionResult> ObtenerListaPorId(int id)
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var rtoken = Jwt.Validartoken(identity, _context);
-
-            if (!rtoken.success)
-                return BadRequest(new { success = false, message = rtoken.message });
-
-            Usuario usuario = rtoken.result;
-
-            var response = await _adminServicio.ObtenerLista(id);
-            return Ok(response);
-        }
-
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerPorId(int id)
+        public async Task<ActionResult> ObtenerPorId(int id)
         {
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -64,14 +64,18 @@ namespace RoomClean.Controllers
 
             Usuario usuario = rtoken.result;
 
-            var response = await _adminServicio.ObtenerPorId(id);
+            if (usuario.FKRol != 1)
+            {
+                return BadRequest("No tienes permisos para esta accion");
+
+            }
+
+            var response = await _inventarioService.ObtenerPorId(id);
             return Ok(response);
         }
-
-
 
         [HttpPost("create")]
-        public async Task<ActionResult> Crear([FromBody] TareaDto request)
+        public async Task<ActionResult> Crear([FromBody] InventarioDto request)
         {
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -88,14 +92,19 @@ namespace RoomClean.Controllers
 
             }
 
-
-            var response = await _adminServicio.Crear(request);
-            return Ok(response);
+            try
+            {
+                var response = await _inventarioService.Crear(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Editar([FromBody] TareaDto request, int id)
+        public async Task<IActionResult> Editar(int id, [FromBody] InventarioDto request)
         {
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -112,12 +121,20 @@ namespace RoomClean.Controllers
 
             }
 
-            var response = await _adminServicio.Editar(request, id);
-            return Ok(response);
+
+            try
+            {
+                var response = await _inventarioService.Editar(id, request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -134,14 +151,16 @@ namespace RoomClean.Controllers
 
             }
 
-            var response = await _adminServicio.Eliminar(id);
-
-            if (response.Succeded)
+            try
             {
+                var response = await _inventarioService.Eliminar(id);
                 return Ok(response);
             }
-
-            return BadRequest(response);
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
+
     }
 }
