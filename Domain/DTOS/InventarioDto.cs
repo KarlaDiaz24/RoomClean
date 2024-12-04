@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOS
 {
-    public class EvidenciaDto
+    public class InventarioDto
     {
-        public string? Comentarios { get; set; }
-        public string CompletedDescriptions { get; set; }
-        public int FKTarea { get; set; }
+        public string? Nombre { get; set; }
+        public string? Descripcion { get; set; }
+        public int Cantidad { get; set; }
     }
+
 }

@@ -14,5 +14,7 @@ namespace RoomClean.Services
         public Task<Response<Usuario>> ActualizarUsuario(int id, UsuarioDto usuario);
 
         public Task<Response<Usuario>> EliminarUsuario(int id);
+
+        public Task<Response<Usuario>> ValidarUsuario(string correo, string contraseña);
     }
 }

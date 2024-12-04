@@ -16,12 +16,14 @@ namespace RoomClean.Services
         }
 
         //Lista de usuarios
-        public async Task<Response<List<Evidencia>>> ObtenerLista()
+        public async Task<Response<List<Evidencia>>> ObtenerLista(int Id)
         {
             try
             {
                 List<Evidencia> response = new List<Evidencia>();
-                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>("PAEvidencia", new { }, commandType: CommandType.StoredProcedure);
+                var result = await _context.Database.GetDbConnection().QueryAsync<Evidencia>(
+                    "PAEvidencia", 
+                    new { Id }, commandType: CommandType.StoredProcedure);
                 response = result.ToList();
                 return new Response<List<Evidencia>>(response);
             }
@@ -34,7 +36,7 @@ namespace RoomClean.Services
         {
             try
             {
-                Evidencia response = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia response = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
                 return new Response<Evidencia>(response);
             }
             catch (Exception ex)
@@ -50,52 +52,55 @@ namespace RoomClean.Services
                 {
                     Comentarios = request.Comentarios,
                     FKTarea = request.FKTarea,
+                    CompletedDescriptions = request.CompletedDescriptions // Asegúrate de asignar los checks marcados aquí
                 };
-                _context.evidencia.Add(evidencia);
+                _context.Evidencias.Add(evidencia);
                 await _context.SaveChangesAsync();
 
                 return new Response<Evidencia>(evidencia);
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
+
         public async Task<Response<Evidencia>> Editar(EvidenciaDto request, int id)
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
-                    throw new Exception("No existe el usuario");
+                    throw new Exception("No existe la evidencia");
                 }
 
                 evidencia.Comentarios = request.Comentarios;
                 evidencia.FKTarea = request.FKTarea;
+                evidencia.CompletedDescriptions = request.CompletedDescriptions; // Actualiza los checks marcados
 
-                _context.evidencia.Update(evidencia);
+                _context.Evidencias.Update(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }
             catch (Exception ex)
             {
-                throw new Exception("Ocurrio un error" + ex.Message);
+                throw new Exception("Ocurrió un error: " + ex.Message);
             }
         }
         public async Task<Response<Evidencia>> Eliminar(int id)
         {
             try
             {
-                Evidencia evidencia = await _context.evidencia.FirstOrDefaultAsync(x => x.Id == id);
+                Evidencia evidencia = await _context.Evidencias.FirstOrDefaultAsync(x => x.Id == id);
 
                 if (evidencia == null)
                 {
                     throw new Exception("No existe el usuario");
                 }
 
-                _context.evidencia.Remove(evidencia);
+                _context.Evidencias.Remove(evidencia);
                 await _context.SaveChangesAsync();
                 return new Response<Evidencia>(evidencia);
             }

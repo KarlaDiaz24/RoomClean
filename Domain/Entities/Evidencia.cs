@@ -13,6 +13,7 @@ namespace Domain.Entities
         [Key]
         public int Id { get; set; }
         public string? Comentarios { get; set; }
+        public string CompletedDescriptions { get; set; }
         [ForeignKey("Tarea")]
         public int FKTarea { get; set; }
         public Tarea? Tarea { get; set; }
